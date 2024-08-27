@@ -1,0 +1,68 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  advertisings Advertising[]
+  category     String?
+  createdAt    DateTime      @default(now())
+  description  String?
+  id           String        @id @default(cuid())
+  imageUrl     String?
+  inventories  Inventory[]
+  name         String?
+  pricings     Pricing[]
+  updatedAt    DateTime      @updatedAt
+}
+
+model Pricing {
+  basePrice       Float?
+  competitorPrice Float?
+  createdAt       DateTime @default(now())
+  discountedPrice Float?
+  id              String   @id @default(cuid())
+  product         Product? @relation(fields: [productId], references: [id])
+  productId       String?
+  updatedAt       DateTime @updatedAt
+}
+
+model Advertising {
+  budget         Float?
+  campaignName   String?
+  createdAt      DateTime  @default(now())
+  endedAt        DateTime?
+  id             String    @id @default(cuid())
+  product        Product?  @relation(fields: [productId], references: [id])
+  productId      String?
+  startedAt      DateTime?
+  targetAudience String?
+  updatedAt      DateTime  @updatedAt
+}
+
+model Inventory {
+  createdAt      DateTime @default(now())
+  forecastDemand Int?
+  id             String   @id @default(cuid())
+  product        Product? @relation(fields: [productId], references: [id])
+  productId      String?
+  reorderLevel   Int?
+  stockLevel     Int?
+  updatedAt      DateTime @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
